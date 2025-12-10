@@ -1,7 +1,6 @@
 "use client";
 
 import AuthFieldBox from "@/components/AuthFieldBox";
-import useAuth from "@/hooks/useAuth";
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
 import { LoginSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
@@ -9,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, ShieldUser } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -19,15 +18,6 @@ const LoginForm = () => {
   const { login, showNoti } = useBoundStore();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-
-  const isAuth = useAuth();
-
-  useEffect(() => {
-    console.log("effect run and isAuth is ", isAuth);
-    if (isAuth) {
-      router.replace("/");
-    }
-  }, []);
 
   const {
     register,
@@ -79,7 +69,7 @@ const LoginForm = () => {
           {...register("username")}
           placeholder="Enter username"
           className={cn(
-            "auth-input",
+            "auth-input hover-effect",
             errors.username && "error"
           )}
         />

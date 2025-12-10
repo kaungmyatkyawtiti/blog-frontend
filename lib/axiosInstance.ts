@@ -5,7 +5,8 @@ console.log("axiosInstance.ts loaded!");
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,
-  timeout: 10000
+  timeout: 10000,
+  withCredentials: true,
 });
 
 // axiosInstance.interceptors.request.use(

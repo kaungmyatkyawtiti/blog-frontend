@@ -29,3 +29,10 @@ export const LoginSchema = z.object({
     .nonempty({ message: "Password is required!" })
     .min(2, { message: "Password must be at least 2 characters!" }),
 }).required();
+
+export const postSchema = z.object({
+  content: z
+    .string()
+    .nonempty({ message: "Content is required!" })
+    .min(2, { message: "Content must be at least 2 characters!" }),
+}).required();

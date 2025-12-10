@@ -39,10 +39,10 @@ export function CommentItem({
           {comment.content}
         </p>
 
-        <div className="flex items-center gap-8 text-foreground/70">
+        <div className="flex items-center gap-12 text-foreground/70">
           <SocialActionBtn
-            icon={<Heart size={14} />}
-            label={"Like"}
+            icon={<Heart size={16} />}
+            count={10}
             className={"hover:text-pink-500"}
           />
           <button className="text-[13px] font-medium hover:underline hover:text-social-indigo">

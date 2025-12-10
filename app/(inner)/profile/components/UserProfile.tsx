@@ -1,27 +1,20 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { useGetProfileById } from "@/hooks/userHook";
+import { useBoundStore } from "@/lib/hooks/useBoundStore";
 import { Edit } from "lucide-react";
-import Image from "next/image"
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  image: string | null;
-  bio: string | null;
-  created: Date;
-}
-
-const mockUser: User = {
-  id: 1,
-  name: "Jane Doe",
-  username: "janedoe_dev",
-  image:
-    "https://images.unsplash.com/photo-1517849845537-4d257902a963?auto=format&fit=crop&q=80&w=320",
-  bio: "Full-stack developer with a passion for clean code and efficient design. Currently learning new things and loving Tailwind CSS.",
-  created: new Date("2023-01-15T12:00:00Z"),
-};
+import Image from "next/image";
+import { formatRelative } from "date-fns"
 
 export default function UserProfile() {
+  const user = useBoundStore(state => state.user);
+  const { data: profile, isLoading, isError, error, refetch } = useGetProfileById(user?.id!);
+
+  if (isLoading) return <p>Loading profile...</p>;
+
+  if (isError) return <p>Error fetching profile: {error?.message}</p>;
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
@@ -31,20 +24,20 @@ export default function UserProfile() {
             width={160}
             height={160}
             src={"/logo.jpg"}
-            alt={`${mockUser.name} profile`}
+            alt={profile?.username}
             className="rounded-full object-cover shadow-lg border border-border"
           />
         </div>
 
         {/* user info */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-xl">
           <div className="flex flex-col lg:flex-row justify-between items-end lg:items-center mb-4 gap-4">
             <div className="self-center">
               <h1 className="text-3xl font-bold text-foreground leading-tight">
-                {mockUser.name}
+                {profile?.name}
               </h1>
               <p className="text-lg text-social-indigo font-medium mb-6 hover:underline cursor-pointer">
-                @{mockUser.username}
+                @{profile?.username}
               </p>
             </div>
 
@@ -62,14 +55,14 @@ export default function UserProfile() {
               About Me
             </h2>
             <p className="text-card-foreground/70 leading-relaxed text-[15px] font-medium">
-              {mockUser.bio || "No bio provided yet."}
+              {profile?.bio || "No bio provided yet."}
             </p>
           </div>
 
           {/* register since */}
-          <div className="mt-5 text-sm text-green-500">
-            <span className="font-semibold">Member Since:</span>{" "}
-            {mockUser.created.getFullYear()}
+          <div className="mt-5 text-sm text-social-indigo">
+            <span className="font-semibold text-foreground/80">Member Since:</span>{" "}
+            {formatRelative(profile?.created, new Date())}
           </div>
         </div>
       </div>

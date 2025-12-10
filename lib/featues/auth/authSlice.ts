@@ -1,24 +1,23 @@
 import { BoundStore } from "@/lib/hooks/useBoundStore";
-import { LoginResponse, LoginUser, RefreshResponse, ResponseUser } from "@/types/auth";
+import { LoginResponse, LoginUser } from "@/types/auth";
 import { apiUrl } from "@/utils/env";
 import { StateCreator } from "zustand";
 
 export interface AuthState {
-  accessToken: string;
-  user: ResponseUser | null
+  user: LoginResponse | null
 }
 
 export interface AuthActions {
   login: (user: LoginUser) => Promise<LoginResponse>;
+  refreshAccess: () => Promise<void>;
   logout: () => void;
-  refreshAccess: () => Promise<RefreshResponse>;
+  setUser: (user: LoginResponse) => void;
 }
 
 export type AuthSlice = AuthState & AuthActions
 
 export const initState: AuthState = {
-  accessToken: "",
-  user: null
+  user: null,
 }
 
 export const createAuthSlice: StateCreator<
@@ -43,29 +42,21 @@ export const createAuthSlice: StateCreator<
       const data = json.data;
 
       if (!response.ok) {
-        set((state) => {
-          state.accessToken = ""
-          state.user = null
-        },
+        set((state) => { state.user = null },
           undefined,
           "auth/login"
         );
         throw new Error(json.error || "Invalid user");
       }
-      set((state) => {
-        state.accessToken = data.accessToken,
-          state.user = data.user
-      },
+
+      set((state) => { state.user = data },
         undefined,
         "auth/login"
       );
-
       return data;
+
     } catch (err) {
-      set((state) => {
-        state.accessToken = "",
-          state.user = null
-      },
+      set((state) => { state.user = null },
         undefined,
         "auth/login"
       );
@@ -84,23 +75,17 @@ export const createAuthSlice: StateCreator<
       });
       const json = await response.json();
       console.log("refresh accessToken response", response, "refresh accessToken json", json);
-      const data = json.data;
 
       if (!response.ok) {
-        set((state) => { state.accessToken = "" },
+        set((state) => { state.user = null },
           undefined,
           "auth/refresh"
         );
         throw new Error(json.error || "Invalid user");
       }
-      set((state) => { state.accessToken = data },
-        undefined,
-        "auth/refresh"
-      );
 
-      return data;
     } catch (err) {
-      set((state) => { state.accessToken = "" },
+      set((state) => { state.user = null },
         undefined,
         "auth/refresh"
       );
@@ -109,12 +94,16 @@ export const createAuthSlice: StateCreator<
   },
 
   logout: () => {
-    set((state) => {
-      state.accessToken = "",
-        state.user = null
-    },
+    set((state) => { state.user = null },
       undefined,
       "auth/logout"
     );
   },
+
+  setUser: (user: LoginResponse) => {
+    set((state) => { state.user = user },
+      undefined,
+      "auth/verifyUser"
+    )
+  }
 });

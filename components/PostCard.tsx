@@ -26,21 +26,22 @@ const PostCard = ({
       }
       <div className="flex flex-col lg:flex-row gap-6">
         <button
-          className="inline-flex lg:flex-col items-center gap-4 lg:px-2 group/profile w-max h-max">
+          className="inline-flex lg:flex-col items-center gap-4 lg:px-2 group/profile w-30"
+        >
           <Image
-            src={post.user.image || "/user.jpg"}
+            src={"/user.jpg"}
             alt='avator'
             width={60}
             height={60}
             className='rounded-full'
           />
-          <h3 className="font-semibold tracking-tight cursor-pointer group-hover/profile:underline group-hover/profile:text-social-indigo hover-effect">
+          <h3 className="font-semibold text-sm tracking-tight cursor-pointer group-hover/profile:underline group-hover/profile:text-social-indigo hover-effect">
             {post.user.username}
           </h3>
         </button>
 
         <div className="flex-1">
-          <div className="flex items-center gap-1.5 text-xs text-green-600 font-semibold">
+          <div className="flex items-center gap-1.5 text-xs text-social-green font-semibold">
             <Clock size={16} />
             <span>
               {formatRelative(post.created, new Date())}
@@ -51,23 +52,23 @@ const PostCard = ({
             {post.content}
           </p>
 
-          <div className="flex items-center gap-10 border-t border-border pt-5 text-foreground/70">
+          <div className="flex items-center gap-12 border-t border-border pt-5 text-foreground/70">
             <SocialActionBtn
               icon={<Heart size={20} />}
-              label="Like"
+              count={8}
               className="hover:text-pink-500"
             />
             <SocialActionBtn
               icon={<MessageCircle size={20} />}
-              label="Comment"
+              count={post.comments.length}
               className="hover:text-blue-500"
               onClick={onOpenPost}
             />
-            <SocialActionBtn
-              icon={<Share2 size={20} />}
-              label="Share"
-              className="hover:text-green-500"
-            />
+            {/* <SocialActionBtn */}
+            {/*   icon={<Share2 size={20} />} */}
+            {/*   label="Share" */}
+            {/*   className="hover:text-green-500" */}
+            {/* /> */}
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function MyLogo() {
       {
         !isMobile &&
         <h2
-          className="ml-3 text-xl font-bold whitespace-nowrap text-social-indigo"
+          className="ml-3 text-xl font-bold whitespace-nowrap text-foreground"
         >
           Kiri's News
         </h2>

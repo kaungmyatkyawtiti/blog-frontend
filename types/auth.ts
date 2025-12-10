@@ -3,15 +3,10 @@ export interface LoginUser {
   password: string;
 }
 
-export interface ResponseUser {
+export interface LoginResponse {
   id: number;
   name: string;
   username: string;
-}
-
-export interface LoginResponse {
-  user: ResponseUser,
-  accessToken: string,
 }
 
 export interface RefreshResponse {

@@ -43,6 +43,7 @@
   --color-social-indigo: var(--social-indigo);
   --color-snackbar: var(--snackbar);
   --color-snackbar-foreground: var(--snackbar-foreground);
+  --color-social-green: var(--social-green);
 }
 
 :root {
@@ -83,6 +84,7 @@
   --social-indigo: oklch(0.55 0.25 295);
   --snackbar: oklch(0.205 0 0);
   --snackbar-foreground: oklch(1 0 0);
+  --social-green: oklch(0.6652 0.2187 143.6);
 }
 
 .dark {
@@ -121,6 +123,7 @@
   --social-indigo: oklch(0.5779 0.2235 284.9);
   --snackbar: oklch(0.97 0 0);
   --snackbar-foreground: oklch(0 0 0);
+  --social-green: oklch(0.6652 0.2187 143.6);
 }
 
 @layer base {
@@ -149,12 +152,32 @@
   }
 }
 
+@utility post-input {
+  @apply w-full p-3 bg-input border border-border/70 rounded-lg placeholder-foreground/60 resize-y;
+
+  &:focus {
+    @apply outline-none ring ring-social-green border-social-green
+  }
+
+  &.error {
+    @apply border-destructive;
+
+    &:focus {
+      @apply outline-none ring ring-destructive;
+    }
+  }
+}
+
 @utility auth-icon {
   @apply bg-social-indigo text-white p-2 rounded-full;
 }
 
 @utility icon-center {
   @apply flex items-center gap-2;
+}
+
+@utility fancy-button {
+  @apply py-3 px-4 font-semibold rounded-lg shadow-sm bg-social-green hover:bg-social-green/90 text-white hover:scale-105 focus:outline-none;
 }
 
 @utility hover-effect {

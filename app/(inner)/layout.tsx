@@ -3,9 +3,11 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import Header from "@/components/Header"
-import IsAuth from "@/components/IsAuth"
+import { useAuth } from "@/hooks/useAuth";
 
 function HomeLayout({ children }: { children: React.ReactNode }) {
+  useAuth();
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -17,4 +19,4 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default IsAuth(HomeLayout);
+export default HomeLayout;

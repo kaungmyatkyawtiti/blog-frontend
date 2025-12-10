@@ -1,19 +1,15 @@
-"use client"
+"use client";
 
 import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
+  LogIn,
   LogOut,
-  Sparkles,
-} from "lucide-react"
+  UserRoundPen,
+} from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "./ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,25 +18,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
+import { useBoundStore } from "@/lib/hooks/useBoundStore";
 
-export default function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+export default function NavUser() {
   const { isMobile } = useSidebar();
+  const user = useBoundStore((state) => state.user);
+
+  if (!user) return <div>User loading</div>
 
   return (
     <SidebarMenu>
@@ -53,14 +45,20 @@ export default function NavUser({
             >
               <Avatar className="h-9 w-9 rounded-full">
                 <AvatarImage
-                  src={user.avatar}
-                  alt={user.name}
+                  src={user ? "/logo.jpg" : undefined}
+                  alt={user?.name || "Guest"}
                 />
-                <AvatarFallback className="rounded-full">ME</AvatarFallback>
+                <AvatarFallback className="rounded-full">
+                  {user ? "ME" : "G"}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">
+                  {user ? user.name : "Guest"}
+                </span>
+                <span className="truncate text-xs">
+                  {user ? user.username : "Please log in"}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -71,41 +69,58 @@ export default function NavUser({
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <Link
-                href={"/profile"}
-              >
+            {user ? (
+              <>
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage src="logo.jpg" alt={user.name} />
+                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">{user.name}</span>
+                      <span className="truncate text-xs">{user.username}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <Link href="/profile">
+                    <DropdownMenuItem>
+                      <BadgeCheck />
+                      Account
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem>
+                    <Bell />
+                    Notifications
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <BadgeCheck />
-                  Account
+                  <LogOut />
+                  Log out
                 </DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuGroup>
+                <Link href="/login">
+                  <DropdownMenuItem>
+                    <LogIn />
+                    Login
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/register">
+                  <DropdownMenuItem>
+                    <UserRoundPen />
+                    Register
+                  </DropdownMenuItem>
+                </Link>
+              </DropdownMenuGroup>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

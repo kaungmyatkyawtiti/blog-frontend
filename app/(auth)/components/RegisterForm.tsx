@@ -115,7 +115,7 @@ const RegisterForm = () => {
           {...register("confirmPassword")}
           placeholder="Confirm password"
           className={cn(
-            "auth-input",
+            "auth-input hover-effect",
             errors.confirmPassword && "error"
           )}
         />
