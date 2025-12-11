@@ -11,7 +11,9 @@ export default function BlogPage({
   params: Promise<{ postId: string }>
 }) {
   const { postId } = use(params)
-  const post = useGetPostById(+postId)
+
+  const { data: post, isSuccess, isError, isPending, isLoading, refetch, error } = useGetPostById(+postId);
+
   console.log("post", post);
 
   if (!post) return <div>Not found</div>
@@ -19,8 +21,8 @@ export default function BlogPage({
   return (
     <div className="container mx-auto py-10 px-4 max-w-3xl">
       <PostCard post={post} />
-
-      <PostComments />
+      {/**/}
+      <PostComments post={post} />
     </div>
   )
 }

@@ -1,9 +1,14 @@
-import AdminPotion from "./AdminPotion";
+"use client";
+
+import AuthPotion from "./AuthPotion";
 import { ModeToggle } from "./ModeToggle";
 import MyLogo from "./MyLogo";
 import { SidebarTrigger } from "./ui/sidebar";
+import { useBoundStore } from "@/lib/hooks/useBoundStore";
 
 export default function Header() {
+  const user = useBoundStore(state => state.user);
+
   return (
     <header
       className="py-5 border-b border-border top-0 z-50 sticky backdrop-blur-lg bg-sidebar/70"
@@ -17,11 +22,12 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <AdminPotion />
+          {
+            user && <AuthPotion />
+          }
           <ModeToggle />
         </div>
       </div>
     </header>
   )
 }
-

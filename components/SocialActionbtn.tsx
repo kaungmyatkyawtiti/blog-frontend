@@ -16,13 +16,13 @@ const SocialActionBtn = ({
 }: SocialActionBtnProps) => (
   <button
     className={cn(
-      "flex items-center group/btn hover-effect gap-3",
+      "flex items-center group/btn hover-effect gap-2",
       className
     )}
     {...props}
   >
     <span className="group-hover/btn:scale-110 hover-effect">{icon}</span>
-    <span className="text-[13px] font-medium hidden sm:block">{count}</span>
+    <span className="text-[14px] font-medium hidden sm:block">{count}</span>
   </button>
 );
 

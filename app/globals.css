@@ -153,7 +153,7 @@
 }
 
 @utility post-input {
-  @apply w-full p-3 bg-input border border-border/70 rounded-lg placeholder-foreground/60 resize-y;
+  @apply w-full p-3 bg-input border-[0.5px] border-border/70 rounded-md placeholder-foreground/60 resize-y text-sm;
 
   &:focus {
     @apply outline-none ring ring-social-green border-social-green
@@ -177,7 +177,7 @@
 }
 
 @utility fancy-button {
-  @apply py-3 px-4 font-semibold rounded-lg shadow-sm bg-social-green hover:bg-social-green/90 text-white hover:scale-105 focus:outline-none;
+  @apply p-3 font-semibold rounded-lg shadow-sm bg-social-green hover:bg-social-green/90 text-white hover:scale-105 focus:outline-none;
 }
 
 @utility hover-effect {

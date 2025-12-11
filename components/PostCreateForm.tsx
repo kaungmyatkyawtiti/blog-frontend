@@ -7,12 +7,14 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
+import { useRouter } from "next/navigation";
 
 type PostFormSchema = z.infer<typeof postSchema>;
 
 export default function PostCreateForm() {
   const { showNoti } = useBoundStore();
   const { mutateAsync: createPost } = useMutationCreatePost();
+  const router = useRouter();
 
   const {
     register,
@@ -31,6 +33,7 @@ export default function PostCreateForm() {
     try {
       const result = await createPost(data);
       console.log("Create post success from post create from", result);
+      router.push("/");
       showNoti("Successfully created post.");
     } catch (err) {
       console.log("Create post error from post create form", err);
@@ -62,7 +65,7 @@ export default function PostCreateForm() {
         />
         {
           errors.content &&
-          <p className="font-medium text-destructive ps-2">{errors.content.message}</p>
+          <p className="font-medium text-destructive ps-2 text-sm">{errors.content.message}</p>
         }
       </div>
 

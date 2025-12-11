@@ -36,3 +36,10 @@ export const postSchema = z.object({
     .nonempty({ message: "Content is required!" })
     .min(2, { message: "Content must be at least 2 characters!" }),
 }).required();
+
+export const commentSchema = z.object({
+  content: z
+    .string()
+    .nonempty({ message: "Content is required!" })
+    .min(2, { message: "Content must be at least 2 characters!" }),
+}).required();

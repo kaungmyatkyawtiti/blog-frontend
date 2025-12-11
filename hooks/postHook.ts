@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { queryClient } from "@/components/Providers"
-import { createPostApi, deletePostApi, getAllPostsApi, likePostApi } from "./api/postApi"
-import { NewPost, Post } from "@/types/post";
+import { createPostApi, deletePostApi, getAllPostsApi, getPostByIdApi, likePostApi, unlikePostApi } from "./api/postApi"
+import { NewPost, NewPostLike, Post, PostLike } from "@/types/post";
 
 export const usegetAllPosts = () => useQuery({
   queryKey: ['posts'],
@@ -9,34 +9,30 @@ export const usegetAllPosts = () => useQuery({
   refetchOnWindowFocus: false,
 })
 
-export const useGetPostById = (postId: number) => {
-  const data = queryClient.getQueryData<Post[]>(['posts']);
-  console.log("data from useGetPostById", data);
-  const result = data?.find(post => post.id === postId);
-  console.log("result", result);
-  return result;
-};
+export const useGetPostById = (id: number) => useQuery({
+  queryKey: ['posts', id],
+  queryFn: () => getPostByIdApi(id),
+  refetchOnWindowFocus: false,
+})
+
+// export const useGetPostById = (postId: number) => {
+//   const data = queryClient.getQueryData<Post[]>(['posts']);
+//   const result = data?.find(post => post.id === postId);
+//   return result;
+// };
 
 export const useMutationCreatePost = () => useMutation({
   mutationFn: (post: NewPost) => createPostApi(post),
-
-  onSuccess: (newOne: NewPost) => {
-    console.log("Create post onSuccess", newOne);
-
-    queryClient.setQueryData(
-      ["posts"],
-      (oldState: Post[]) => [...oldState, newOne]
-    )
-  },
-  onSettled: (newOne, error, variables, onMutateResult) => {
-    console.log("Create post onSettled", newOne);
+  onSettled: (newPost) => {
+    queryClient.invalidateQueries({ queryKey: ["posts"] });
+    console.log("Create post onSettled", newPost);
   },
 });
 
 export const useMutationDeletePost = () => useMutation({
-  mutationFn: (post) => deletePostApi(post.id),
+  mutationFn: (post: Post) => deletePostApi(post.id),
 
-  onMutate: async (post: Post) => {
+  onMutate: async (post) => {
     await queryClient.cancelQueries({ queryKey: ['posts'] });
 
     const previous = queryClient.getQueryData(['posts']);
@@ -48,67 +44,67 @@ export const useMutationDeletePost = () => useMutation({
 
     return { previous };
   },
-  onSuccess: (post, variables, onMutateResult) => {
-    console.log("post delete onSuccess", post, variables, onMutateResult);
-  },
-
-  onError: (err, post, onMutateResult) => {
+  onError: (err, variables, onMutateResult) => {
     console.log("post delete onError", err);
     queryClient.setQueryData(
       ['posts'],
       onMutateResult?.previous
     )
   },
-
-  onSettled: (post, error, variables, onMutateResult) => {
-    console.log("post delete onSettled", post, variables, onMutateResult);
-  },
 });
 
 export const useMutationLikePost = () => useMutation({
   mutationFn: (post: Post) => likePostApi(post.id),
 
-  onSuccess: (newOne: Post) => {
-    console.log("Like post onSuccess", newOne);
+  onSuccess: (newLike) => {
+    console.log("Like post onSuccess", newLike);
 
     queryClient.setQueryData(
       ["posts"],
-      (oldState: Post[]) => [...oldState, newOne]
+      (oldState: Post[]) =>
+        oldState.map(post =>
+          post.id === newLike.postId
+            ? { ...post, likes: [...post.likes, newLike] }
+            : post
+        )
     )
   },
-  onSettled: (newOne, error, variables, onMutateResult) => {
-    console.log("Like post onSettled", newOne);
+  onSettled: () => {
+    console.log("Like post onSettled");
   },
 });
 
 export const useMutationUnlikePost = () => useMutation({
-  mutationFn: (post: Post) => deletePostApi(post.id),
+  mutationFn: (post: Post) => unlikePostApi(post.id),
 
-  onMutate: async (post: Post) => {
+  onMutate: async (post) => {
     await queryClient.cancelQueries({ queryKey: ['posts'] });
 
     const previous = queryClient.getQueryData(['posts']);
 
+    console.log("post", post);
+
+    const userLike = post.likes.find(like => like.userId === post.userId);
+
     queryClient.setQueryData(
       ["posts"],
-      (oldState: Post[]) => oldState.filter(p => p.id !== post.id)
+      (oldState: Post[]) => oldState.map(p =>
+        p.id === post.id
+          ? {
+            ...p,
+            likes: p.likes.filter(l => l.userId !== userLike?.userId)
+          }
+          : p
+      )
     )
 
     return { previous };
   },
-  onSuccess: (post, variables, onMutateResult) => {
-    console.log("Unlike post onSuccess", post, variables, onMutateResult);
-  },
-
-  onError: (err, post, onMutateResult) => {
+  onError: (err, variables, onMutateResult) => {
     console.log("Unlike post onError", err);
     queryClient.setQueryData(
       ['posts'],
       onMutateResult?.previous
     )
-  },
-
-  onSettled: (post, error, variables, onMutateResult) => {
-    console.log("Unlike post onSettled", post, variables, onMutateResult);
   },
 });

@@ -2,7 +2,7 @@ import { Bell, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
-export default function AdminPotion() {
+export default function AuthPotion() {
   return (
     <div className="flex items-center gap-2">
       <Link href={"/add"}>

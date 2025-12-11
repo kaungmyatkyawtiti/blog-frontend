@@ -1,28 +1,30 @@
 import axiosInstance from "@/lib/axiosInstance";
-import { AxiosResponse } from "axios";
-import { Comment } from "@/types/comment";
+import { Comment, CommentLike, NewComment } from "@/types/comment";
 
 export async function getAllCommentsApi(): Promise<Comment[]> {
-  const { data } = await axiosInstance.get<AxiosResponse<Comment[]>>("api/comments");
+  const { data } = await axiosInstance.get("api/comments");
   return data.data;
 }
 
-export async function createCommentApi(): Promise<Comment> {
-  const { data } = await axiosInstance.post<AxiosResponse<Comment>>("api/comments");
+export async function createCommentApi(comment: NewComment): Promise<Comment> {
+  const { data } = await axiosInstance.post("api/comments", comment);
   return data.data;
 }
 
-export async function likeCommentApi(id: number): Promise<Comment> {
-  const { data } = await axiosInstance.post<AxiosResponse<Comment>>(`api/comments/like/${id}`);
+export async function deleteCommentApi(id: number): Promise<void> {
+  await axiosInstance.delete(`api/comments/${id}`);
+}
+
+export async function likeCommentApi(id: number): Promise<CommentLike> {
+  const { data } = await axiosInstance.post(`api/comments/like/${id}`);
   return data.data;
 }
 
-export async function unlikeCommentApi(id: number): Promise<Comment> {
-  const { data } = await axiosInstance.delete<AxiosResponse<Comment>>(`api/comments/unlike/${id}`);
-  return data.data;
+export async function unlikeCommentApi(id: number): Promise<void> {
+  await axiosInstance.delete(`api/comments/unlike/${id}`);
 }
 
 export async function getCommentAllLikesApi(): Promise<Comment> {
-  const { data } = await axiosInstance.get<AxiosResponse<Comment>>("api/comments/likes");
+  const { data } = await axiosInstance.get("api/comments/likes");
   return data.data;
 }

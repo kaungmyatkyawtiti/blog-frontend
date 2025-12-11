@@ -9,13 +9,13 @@ const CreatePostPage = () => {
         aria-label="Go back"
       >
         <ChevronLeft />
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+        <h1 className="text-xl font-bold tracking-tight">
           Back
         </h1>
       </button>
 
       <div className="max-w-3xl mx-auto bg-card rounded-xl shadow-sm p-6 sm:p-10 border border-border/70">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-social-green mb-8 border-b border-border pb-5">
+        <h2 className="text-2xl font-bold text-social-green mb-8 border-b border-border pb-5">
           📝 Create New Post
         </h2>
 

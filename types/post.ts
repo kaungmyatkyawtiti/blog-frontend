@@ -1,9 +1,7 @@
 import { User } from "./user";
 import { Comment } from "./comment";
 
-export type PostComment = Omit<Comment, "user">;
-
-interface PostLike {
+export interface PostLike {
   id: number;
   postId: number;
   userId: number;
@@ -15,7 +13,7 @@ export interface Post {
   content: string;
   userId: number;
   user: User;
-  comments: PostComment[];
+  comments: Comment[];
   likes: PostLike[];
   created: string;
 }
@@ -23,3 +21,5 @@ export interface Post {
 export interface NewPost {
   content: string;
 }
+
+export type NewPostLike = Omit<PostLike, "id">;

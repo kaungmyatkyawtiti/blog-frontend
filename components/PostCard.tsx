@@ -1,74 +1,100 @@
-import { Heart, MessageCircle, Share2, Clock } from 'lucide-react';
+"use client";
+
+import { Heart, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { formatRelative } from "date-fns"
 import { Post } from '@/types/post';
 import DeletePostBtn from './DeletePostBtn';
 import SocialActionBtn from './SocialActionbtn';
+import { useIsMobile } from '@/hooks/useMobile';
+import { cn } from '@/lib/utils';
+import { useBoundStore } from '@/lib/hooks/useBoundStore';
 
 interface PostCardProps {
   post: Post;
   onDelete?: () => void;
-  onOpenPost?: () => void;
+  onOpen?: () => void;
+  onLike?: () => void;
+  onUnlike?: () => void;
 }
 
 const PostCard = ({
   post,
   onDelete,
-  onOpenPost,
+  onOpen,
+  onLike,
+  onUnlike,
 }: PostCardProps) => {
+  const isMobile = useIsMobile();
+
+  const user = useBoundStore(state => state.user);
+
+  const isLiked = user && post.likes.some(like => like.userId === user.id);
+
+  const isOwner = user && user.id === post.user.id;
 
   return (
     <div
       className="group relative bg-card border border-border/60 rounded-xl p-6 hover:bg-card/90 shadow-sm hover:shadow-md hover:border-border hover-effect"
     >
       {
-        onDelete && <DeletePostBtn onDelete={onDelete} />
+        onDelete && isOwner &&
+        <DeletePostBtn
+          onDelete={onDelete}
+          title={"Delete The Post."}
+        />
       }
-      <div className="flex flex-col lg:flex-row gap-6">
-        <button
-          className="inline-flex lg:flex-col items-center gap-4 lg:px-2 group/profile w-30"
-        >
-          <Image
-            src={"/user.jpg"}
-            alt='avator'
-            width={60}
-            height={60}
-            className='rounded-full'
-          />
-          <h3 className="font-semibold text-sm tracking-tight cursor-pointer group-hover/profile:underline group-hover/profile:text-social-indigo hover-effect">
+      <div
+        className={cn(
+          "flex gap-8",
+          isMobile && "flex-col gap-4"
+        )}
+      >
+        <Image
+          src={post.user.image || "/logo.jpg"}
+          alt='avator'
+          width={60}
+          height={60}
+          className='rounded-full h-16 w-16 object-cover'
+        />
+        <div className="flex-1 space-y-2">
+          <h3 className="font-medium tracking-tight cursor-pointer hover:underline hover:text-social-indigo hover-effect">
             {post.user.username}
           </h3>
-        </button>
-
-        <div className="flex-1">
-          <div className="flex items-center gap-1.5 text-xs text-social-green font-semibold">
-            <Clock size={16} />
-            <span>
-              {formatRelative(post.created, new Date())}
-            </span>
-          </div>
+          <p className="text-xs text-social-green font-semibold">
+            {formatRelative(post.created, new Date())}
+          </p>
 
           <p className="my-6 text-[15px] leading-relaxed wrap-break-word font-light text-card-foreground/80">
             {post.content}
           </p>
 
-          <div className="flex items-center gap-12 border-t border-border pt-5 text-foreground/70">
+          <div
+            className="flex items-center gap-16 border-t border-border pt-5 text-foreground/70">
             <SocialActionBtn
-              icon={<Heart size={20} />}
-              count={8}
-              className="hover:text-pink-500"
+              icon={
+                <Heart
+                  size={20}
+                  className={
+                    isLiked
+                      ? "text-pink-500 fill-pink-500"
+                      : "hover:text-pink-500"
+                  }
+                />
+              }
+              count={post.likes.length}
+              onClick={isLiked ? onUnlike : onLike}
             />
             <SocialActionBtn
-              icon={<MessageCircle size={20} />}
+              icon={
+                <MessageCircle
+                  size={20}
+                  className='hover:text-blue-500'
+                />
+              }
               count={post.comments.length}
-              className="hover:text-blue-500"
-              onClick={onOpenPost}
+              onClick={onOpen}
             />
-            {/* <SocialActionBtn */}
-            {/*   icon={<Share2 size={20} />} */}
-            {/*   label="Share" */}
-            {/*   className="hover:text-green-500" */}
-            {/* /> */}
           </div>
         </div>
       </div>

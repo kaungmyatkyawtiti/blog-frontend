@@ -22,7 +22,7 @@ export default function MyLogo() {
         <h2
           className="ml-3 text-xl font-bold whitespace-nowrap text-foreground"
         >
-          Kiri's News
+          Nott Blog
         </h2>
       }
     </div>
