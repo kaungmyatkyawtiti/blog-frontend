@@ -16,15 +16,15 @@ export async function deleteCommentApi(id: number): Promise<void> {
 }
 
 export async function likeCommentApi(id: number): Promise<CommentLike> {
-  const { data } = await axiosInstance.post(`api/comments/like/${id}`);
+  const { data } = await axiosInstance.post(`api/like/comments/${id}`);
   return data.data;
 }
 
 export async function unlikeCommentApi(id: number): Promise<void> {
-  await axiosInstance.delete(`api/comments/unlike/${id}`);
+  await axiosInstance.delete(`api/unlike/comments/${id}`);
 }
 
-export async function getCommentAllLikesApi(): Promise<Comment> {
-  const { data } = await axiosInstance.get("api/comments/likes");
+export async function getCommentAllLikesApi(id: number): Promise<CommentLike[]> {
+  const { data } = await axiosInstance.get(`api/likes/comments/${id}`);
   return data.data;
 }

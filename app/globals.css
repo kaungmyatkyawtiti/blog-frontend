@@ -156,7 +156,7 @@
   @apply w-full p-3 bg-input border-[0.5px] border-border/70 rounded-md placeholder-foreground/60 resize-y text-sm;
 
   &:focus {
-    @apply outline-none ring ring-social-green border-social-green
+    @apply outline-none ring ring-social-indigo border-social-indigo;
   }
 
   &.error {

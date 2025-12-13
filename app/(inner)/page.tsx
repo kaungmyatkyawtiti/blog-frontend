@@ -1,6 +1,6 @@
 "use client";
 
-import PostCardActions from "@/components/PostCardActions";
+import PostCard from "@/components/PostCard";
 import { usegetAllPosts } from "@/hooks/postHook";
 import { dummyPosts } from "@/utils/constants";
 
@@ -16,24 +16,21 @@ export default function HomePage() {
   if (isError) return <div> {error.message} </div>
 
   return (
-    <div className="min-h-screen">
-      <main className="max-w-3xl px-4 mx-auto my-10 space-y-6">
-        {
-          data.length === 0 &&
-          <div className="text-center text-foreground">
-            <p>No posts yet. Start the conversation!</p>
-          </div>
-        }
-
-        {
-          data.map(post =>
-            <PostCardActions
-              key={post.id}
-              post={post}
-            />
-          )
-        }
-      </main >
-    </div >
+    <main className="max-w-3xl px-4 mx-auto my-10 space-y-6">
+      {
+        data.length === 0 &&
+        <div className="text-center text-foreground">
+          <p>No posts yet. Start the conversation!</p>
+        </div>
+      }
+      {
+        data.map(post =>
+          <PostCard
+            key={post.id}
+            post={post}
+          />
+        )
+      }
+    </main >
   )
 }

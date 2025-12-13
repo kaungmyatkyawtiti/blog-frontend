@@ -1,8 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { queryClient } from "@/components/Providers"
-import { createCommentApi, deleteCommentApi, likeCommentApi, unlikeCommentApi } from "./api/commentApi";
+import { createCommentApi, deleteCommentApi, getCommentAllLikesApi, likeCommentApi, unlikeCommentApi } from "./api/commentApi";
 import { Comment, NewComment } from "@/types/comment";
 import { Post } from "@/types/post";
+
+export const useGetCommentAllLikes = (type: string, id: number) => useQuery({
+  queryKey: ['users', id, type],
+  queryFn: () => getCommentAllLikesApi(id),
+  refetchOnWindowFocus: false,
+})
 
 export const useMutationCreateComment = () => useMutation({
   mutationFn: (comment: NewComment) => createCommentApi(comment),

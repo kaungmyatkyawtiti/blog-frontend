@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { queryClient } from "@/components/Providers"
-import { createPostApi, deletePostApi, getAllPostsApi, getPostByIdApi, likePostApi, unlikePostApi } from "./api/postApi"
-import { NewPost, NewPostLike, Post, PostLike } from "@/types/post";
+import { createPostApi, deletePostApi, getAllPostsApi, getPostAllLikesApi, getPostByIdApi, likePostApi, unlikePostApi } from "./api/postApi"
+import { NewPost, Post } from "@/types/post";
 
 export const usegetAllPosts = () => useQuery({
   queryKey: ['posts'],
@@ -12,6 +12,12 @@ export const usegetAllPosts = () => useQuery({
 export const useGetPostById = (id: number) => useQuery({
   queryKey: ['posts', id],
   queryFn: () => getPostByIdApi(id),
+  refetchOnWindowFocus: false,
+})
+
+export const useGetPostAllLikes = (type: string, id: number) => useQuery({
+  queryKey: ['users', id, type],
+  queryFn: () => getPostAllLikesApi(id),
   refetchOnWindowFocus: false,
 })
 

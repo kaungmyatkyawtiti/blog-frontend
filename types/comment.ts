@@ -4,6 +4,7 @@ export interface CommentLike {
   id: number;
   commentId: number;
   userId: number;
+  user: User;
   created: string;
 }
 

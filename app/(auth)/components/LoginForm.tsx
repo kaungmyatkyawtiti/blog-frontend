@@ -98,24 +98,6 @@ const LoginForm = () => {
         />
       </AuthFieldBox>
 
-      {/* remember me + forgot password */}
-      <div className="flex items-center gap-3 mt-8">
-        <input
-          id="terms"
-          type="checkbox"
-          className="w-4 h-4 border border-border rounded bg-transparent focus:ring-1 focus:ring-secondary"
-        />
-        <p className="font-light text-foreground/80 text-sm">
-          Remember me{" "}
-          <a
-            className="font-medium text-blue-500 hover:underline"
-            href="#"
-          >
-            Forgot password?
-          </a>
-        </p>
-      </div>
-
       {/* submit button */}
       <button
         type="submit"

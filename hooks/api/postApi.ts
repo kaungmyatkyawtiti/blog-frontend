@@ -22,15 +22,15 @@ export async function deletePostApi(id: number): Promise<void> {
 }
 
 export async function likePostApi(id: number): Promise<PostLike> {
-  const { data } = await axiosInstance.post(`api/posts/like/${id}`);
+  const { data } = await axiosInstance.post(`api/like/posts/${id}`);
   return data.data;
 }
 
 export async function unlikePostApi(id: number): Promise<void> {
-  await axiosInstance.delete(`api/posts/unlike/${id}`);
+  await axiosInstance.delete(`api/unlike/posts/${id}`);
 }
 
-export async function getPostAllLikesApi(): Promise<Post> {
-  const { data } = await axiosInstance.get("api/posts/likes");
+export async function getPostAllLikesApi(id: number): Promise<PostLike[]> {
+  const { data } = await axiosInstance.get(`api/likes/posts/${id}`);
   return data.data;
 }

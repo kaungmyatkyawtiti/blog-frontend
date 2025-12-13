@@ -1,12 +1,7 @@
 "use client"
 
-import { Heart } from 'lucide-react';
-import Image from 'next/image';
-import { formatRelative } from "date-fns"
 import { Button } from './ui/button';
-import SocialActionBtn from './SocialActionbtn';
 import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/useMobile';
 import { Comment } from '@/types/comment';
 import { useMutationCreateComment, useMutationDeleteComment, useMutationLikeComment, useMutationUnlikeComment } from '@/hooks/commentHook';
 import { useBoundStore } from '@/lib/hooks/useBoundStore';
@@ -16,6 +11,9 @@ import z from 'zod';
 import { commentSchema } from '@/lib/schemas';
 import { Post } from '@/types/post';
 import DeletePostBtn from './DeletePostBtn';
+import LikeButton from './LikeButton';
+import ContentBox from './ContentBox';
+import { useRouter } from 'next/navigation';
 
 interface CommentItemProps {
   comment: Comment;
@@ -24,9 +22,9 @@ interface CommentItemProps {
 export function CommentItem({
   comment
 }: CommentItemProps) {
-  const isMobile = useIsMobile();
-
   const { showNoti } = useBoundStore();
+
+  const router = useRouter();
 
   const { mutateAsync: likeComment, isSuccess: likeSuccess } = useMutationLikeComment();
   const { mutateAsync: unlikeComment, isSuccess: unlikeSuccess } = useMutationUnlikeComment();
@@ -67,13 +65,18 @@ export function CommentItem({
     }
   }
 
-  const isLiked = user && comment.likes.some(like => like.userId === user.id);
+  const handleLikedList = () => {
+    router.push(`/likes/comments/${comment.id}`);
+    console.log("see who likes this comment");
+  }
+
+  const isLiked = !!(user && comment.likes.some(like => like.userId === user.id));
 
   const isOwner = user && user.id === comment.user.id;
 
   return (
     <div
-      className="p-5 gap-6 border-b border-border last:border-b-0 hover:bg-card hover-effect relative group"
+      className="p-4 border-b border-border last:border-b-0 hover:bg-card hover-effect relative group"
     >
       {
         isOwner &&
@@ -82,49 +85,21 @@ export function CommentItem({
           title={"Delete The Comment."}
         />
       }
-      <div
-        className={cn(
-          "flex gap-8",
-          isMobile && "flex-col gap-4"
-        )}
-      >
-        <Image
-          src={comment.user.image || "/logo.jpg"}
-          alt={comment.user.username}
-          width={40}
-          height={40}
-          className="rounded-full h-12 w-12 object-cover"
-        />
-        <div className="flex-1 flex flex-col gap-2">
-          <h4 className="font-medium">
-            {comment.user.name}
-          </h4>
-          <span className="text-xs text-muted-foreground">
-            {formatRelative(comment.created, new Date())}
-          </span>
-
-          <p
-            className="my-6 text-sm text-card-foreground/75 leading-relaxed mb-4">
-            {comment.content}
-          </p>
-
-          <SocialActionBtn
-            icon={
-              <Heart
-                size={20}
-                className={
-                  isLiked
-                    ? "text-pink-500 fill-pink-500"
-                    : "hover:text-pink-500"
-                }
-              />
-            }
-            count={comment.likes.length}
-            className='ml-auto text-foreground/70'
-            onClick={isLiked ? handleUnike : handleLike}
-          />
-        </div>
-      </div>
+      <ContentBox
+        avatar={comment.user.image}
+        username={comment.user.username}
+        created={comment.created}
+        content={comment.content}
+        avatarSize={50}
+      />
+      <LikeButton
+        onLike={handleLike}
+        onUnlike={handleUnike}
+        isLiked={isLiked}
+        count={comment.likes.length}
+        onLikedList={handleLikedList}
+        className='flex justify-end'
+      />
     </div>
   )
 }
@@ -181,7 +156,7 @@ const PostComments = ({ post }: PostCommentProps) => {
         <div>
           <textarea
             placeholder="Write your insightful comment..."
-            rows={3}
+            rows={5}
             className={cn(
               "post-input hover-effect mb-2",
               errors.content && "error"

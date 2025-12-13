@@ -9,11 +9,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { cn } from '@/lib/utils';
 import { RegisterSchema } from '@/lib/schemas';
+import { useRouter } from 'next/navigation';
+import { useBoundStore } from '@/lib/hooks/useBoundStore';
 
 type FormInputs = z.infer<typeof RegisterSchema>;
 
 const RegisterForm = () => {
+  const { authRegister, showNoti } = useBoundStore();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const {
     register,
@@ -32,7 +37,21 @@ const RegisterForm = () => {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    console.log("submit")
+    console.log("Register data:", data);
+    try {
+      const result = await authRegister(data);
+      console.log("Successfully register from register form", result);
+      router.push("/login");
+      showNoti("Successfully register.");
+    } catch (err) {
+      console.log("Failed to register from register form", err);
+      showNoti("Failed to register.");
+    } finally {
+      reset(
+        { name: "", username: "", password: "", confirmPassword: "" },
+        { keepErrors: true }
+      );
+    }
   }
 
   return (
@@ -125,23 +144,31 @@ const RegisterForm = () => {
         <input
           id="terms"
           type="checkbox"
-          className="w-4 h-4 border border-border rounded bg-transparent focus:ring-1 focus:ring-secondary"
+          checked={acceptedTerms}
+          onChange={(e) => setAcceptedTerms(e.target.checked)}
+          className="w-5 h-5 accent-social-indigo"
         />
         <p className="font-light text-foreground/80 text-sm">
           I accept the{" "}
-          <a
+          <Link
             className="font-medium text-blue-500 hover:underline"
             href="#"
           >
             Terms and Conditions
-          </a>
+          </Link>
         </p>
       </div>
 
       {/* submit button */}
       <button
         type="submit"
-        className="w-full h-11 rounded-full text-white bg-social-indigo hover:opacity-90 transition-opacity font-medium"
+        disabled={!acceptedTerms}
+        className={cn(
+          "w-full h-11 rounded-full text-white font-medium transition-opacity",
+          acceptedTerms
+            ? "bg-social-indigo hover:opacity-90"
+            : "bg-foreground/60 cursor-not-allowed"
+        )}
       >
         Register
       </button>
