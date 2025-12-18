@@ -4,27 +4,28 @@ import { useEffect } from "react";
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
 
 export function useAuth() {
-  const { setUser } = useBoundStore();
-  console.log("useAuth running");
+  const refreshAccess = useBoundStore((s) => s.refreshAccess);
+  const setUser = useBoundStore((s) => s.setUser);
+  const logout = useBoundStore((s) => s.logout);
 
   useEffect(() => {
-    async function verifyUser() {
+    const initAuth = async () => {
       try {
+        await refreshAccess();
+
         const res = await fetch("http://localhost:8000/api/auth/verify", {
           credentials: "include",
         });
 
-        const data = await res.json();
-        console.log("data", data);
+        if (!res.ok) throw new Error("Not authenticated");
 
-        if (res.ok) {
-          setUser(data.data)
-        }
-      } catch (error) {
-        console.log("verifyUser error:", error)
+        const json = await res.json();
+        setUser(json.data);
+      } catch {
+        logout();
       }
-    }
+    };
 
-    verifyUser();
+    initAuth();
   }, []);
 }

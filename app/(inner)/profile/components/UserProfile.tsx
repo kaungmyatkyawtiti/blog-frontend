@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useGetProfileById } from "@/hooks/userHook";
+import { useGetUserById } from "@/hooks/userHook";
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
 import { Edit } from "lucide-react";
 import Image from "next/image";
@@ -9,9 +9,11 @@ import { formatRelative } from "date-fns"
 
 export default function UserProfile() {
   const user = useBoundStore(state => state.user);
-  const { data: profile, isLoading, isError, error, refetch } = useGetProfileById(user?.id!);
+  const { data: profile, isLoading, isError, error, refetch } = useGetUserById(user?.id!);
 
   if (isLoading) return <p>Loading profile...</p>;
+
+  if (!profile) return <div>No profile</div>;
 
   if (isError) return <p>Error fetching profile: {error?.message}</p>;
 

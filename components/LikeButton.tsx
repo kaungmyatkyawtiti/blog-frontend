@@ -1,23 +1,87 @@
+"use client";
+
+import {
+  useMutationLikeComment,
+  useMutationUnlikeComment,
+} from "@/hooks/commentHook";
+import {
+  useMutationLikePost,
+  useMutationUnlikePost,
+} from "@/hooks/postHook";
+import { useBoundStore } from "@/lib/hooks/useBoundStore";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Comment } from "@/types/comment";
+import { Post } from "@/types/post";
 
-interface LikeButtonProps {
-  className?: string;
-  onLike: () => void;
-  onUnlike: () => void;
-  isLiked: boolean;
-  onLikedList: () => void;
-  count: number;
-}
+type LikeButtonProps =
+  | {
+    type: "post";
+    item: Post;
+    className?: string;
+  }
+  | {
+    type: "comment";
+    item: Comment;
+    className?: string;
+  };
 
-const LikeButton = ({
-  className,
-  onLike,
-  onUnlike,
-  isLiked,
-  onLikedList,
-  count
-}: LikeButtonProps) => {
+const LikeButton = ({ type, item, className }: LikeButtonProps) => {
+  const router = useRouter();
+  const showLatest = useBoundStore(state => state.showLatest);
+  const { showNoti } = useBoundStore();
+  const user = useBoundStore(state => state.user);
+  const authUserId = user?.id!;
+  const { mutateAsync: likePost } = useMutationLikePost(showLatest, item.userId);
+  const { mutateAsync: unlikePost } = useMutationUnlikePost(showLatest, authUserId);
+  const { mutateAsync: likeComment } = useMutationLikeComment();
+  const { mutateAsync: unlikeComment } = useMutationUnlikeComment(authUserId);
+
+  const isLiked = user && item.likes.some(like => like.userId === user.id);
+
+  const handleLike = async () => {
+    try {
+      if (type === "comment") {
+        const result = await likeComment(item);
+        console.log("Like comment success", result);
+        showNoti("You liked the comment!");
+      } else {
+        const result = await likePost(item);
+        console.log("Like post success", result);
+        showNoti("You liked the post!");
+      }
+    } catch (err) {
+      console.log("Like error", err);
+      showNoti("Like failed!");
+    }
+  };
+
+  const handleUnlike = async () => {
+    try {
+      if (type === "comment") {
+        await unlikeComment(item);
+        console.log("Unlike comment success");
+        showNoti("You unliked the comment!");
+      } else {
+        await unlikePost(item);
+        console.log("Unlike post success");
+        showNoti("You unliked the post!");
+      }
+    } catch (err) {
+      console.log("Unlike error", err);
+      showNoti("Unlike failed!");
+    }
+  };
+
+  const handleLikedList = () => {
+    router.push(
+      type === "comment"
+        ? `/likes/comments/${item.id}`
+        : `/likes/posts/${item.id}`
+    );
+  };
+
   return (
     <div
       className={cn(
@@ -26,24 +90,27 @@ const LikeButton = ({
       )}
     >
       <button
-        onClick={isLiked ? onUnlike : onLike}
+        onClick={isLiked ? handleUnlike : handleLike}
         className="hover:scale-110 hover-effect"
       >
         <Heart
           size={22}
           className={cn(
-            isLiked ? "fill-pink-500 text-pink-500" : "hover:text-pink-500"
+            isLiked
+              ? "fill-pink-500 text-pink-500"
+              : "hover:text-pink-500"
           )}
         />
       </button>
+
       <button
         className="text-[15px] font-medium hover:text-foreground"
-        onClick={onLikedList}
+        onClick={handleLikedList}
       >
-        {count}
+        {item.likes.length}
       </button>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
 export default LikeButton;

@@ -7,6 +7,11 @@ export async function getAllPostsApi(): Promise<Post[]> {
   return data.data;
 }
 
+export async function getFollowingPosts(): Promise<Post[]> {
+  const { data } = await axiosInstance.get("api/following/posts");
+  return data.data;
+}
+
 export async function getPostByIdApi(id: number): Promise<Post> {
   const { data } = await axiosInstance.get(`api/posts/${id}`);
   return data.data;

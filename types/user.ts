@@ -1,3 +1,6 @@
+import { Comment } from "./comment";
+import { Post } from "./post";
+
 export interface User {
   id: number;
   name: string;
@@ -7,6 +10,15 @@ export interface User {
   password: string;
   refreshToken: string;
   created: string;
-  posts: any[];
-  comments: any[];
+  posts: Post[];
+  comments: Comment[];
+  followers: Follow[];
+  followings: Follow[];
+}
+
+export interface Follow {
+  id: number;
+  followerId: number;
+  followingId: number,
+  created: string;
 }

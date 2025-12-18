@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { cn } from "@/lib/utils";
 import { User } from "@/types/user";
 import Image from 'next/image';
+import FollowButton from "./FollowButton";
 
 interface UserContainerProps {
   user: User;
@@ -23,7 +24,7 @@ const UserContainer = ({ user }: UserContainerProps) => {
         )}
       >
         <Image
-          src={user.image || "/logo.jpg"}
+          src={user.image || "/default_user.png"}
           alt="avatar"
           width={50}
           height={50}
@@ -35,11 +36,12 @@ const UserContainer = ({ user }: UserContainerProps) => {
         </div>
       </div>
 
-      <button
-        className='bg-social-indigo font-medium px-2 py-1 rounded-lg text-sm'
-      >
-        follow
-      </button>
+      <FollowButton user={user} />
+      {/* <button */}
+      {/*   className='bg-social-indigo font-medium px-2 py-1 rounded-lg text-sm' */}
+      {/* > */}
+      {/*   follow */}
+      {/* </button> */}
     </div>
   )
 }

@@ -4,10 +4,10 @@ import { Post } from '@/types/post';
 import DeletePostBtn from './DeletePostBtn';
 import { useBoundStore } from '@/lib/hooks/useBoundStore';
 import ContentBox from './ContentBox';
-import { useMutationDeletePost, useMutationLikePost, useMutationUnlikePost } from '@/hooks/postHook';
-import { useRouter } from "next/navigation";
-import LikeButton from './LikeButton';
+import { useMutationDeletePost } from '@/hooks/postHook';
 import CommentButton from './CommentButton';
+import LikeButton from './LikeButton';
+import Link from 'next/link';
 
 interface PostCardProps {
   post: Post;
@@ -16,13 +16,10 @@ interface PostCardProps {
 const PostCard = ({
   post,
 }: PostCardProps) => {
+  const showLatest = useBoundStore(state => state.showLatest);
   const { showNoti } = useBoundStore();
 
-  const { mutateAsync: deletePost, isSuccess: deleteSuccess } = useMutationDeletePost();
-  const { mutateAsync: likePost, isSuccess: likeSuccess } = useMutationLikePost();
-  const { mutateAsync: unlikePost, isSuccess: unlikeSuccess } = useMutationUnlikePost();
-
-  const router = useRouter();
+  const { mutateAsync: deletePost, isSuccess: deleteSuccess } = useMutationDeletePost(showLatest);
 
   const handleDelete = async () => {
     try {
@@ -35,45 +32,7 @@ const PostCard = ({
     }
   }
 
-  const handleOpenCmt = () => {
-    console.log("post", post);
-    router.push(`/posts/${post.id}`)
-  }
-
-  const handleLike = async () => {
-    try {
-      const result = await likePost(post);
-      console.log("Like post success from post card", result);
-      showNoti("You liked the post!")
-    } catch (err) {
-      console.log("Like post error from post card action", err);
-      showNoti("Like the post failed!")
-    }
-  }
-
-  const handleUnike = async () => {
-    try {
-      await unlikePost(post);
-      console.log("Unlike post success from post card");
-      showNoti("You unliked the post!")
-    } catch (err) {
-      console.log("Unlike post error from post card action", err);
-      showNoti("Unlike the post failed!")
-    }
-  }
-
-  const handleLikedList = () => {
-    console.log("see who likes this post");
-    router.push(`/likes/posts/${post.id}`);
-  }
-
-  const handleMentedList = () => {
-    console.log("see who commented this post");
-  }
-
   const user = useBoundStore(state => state.user);
-
-  const isLiked = !!(user && post.likes.some(like => like.userId === user.id));
 
   const isOwner = user && user.id === post.user.id;
 
@@ -88,25 +47,24 @@ const PostCard = ({
           title={"Delete The Post."}
         />
       }
-      <ContentBox
-        avatar={post.user.image}
-        username={post.user.username}
-        created={post.created}
-        content={post.content}
-      />
+      {/* <ContentBox */}
+      {/*   avatar={post.user.image} */}
+      {/*   username={post.user.username} */}
+      {/*   created={post.created} */}
+      {/*   content={post.content} */}
+      {/* /> */}
+
+      <ContentBox item={post} />
 
       <div className="flex items-center justify-end gap-16 border-t border-border pt-6 text-foreground/70">
         <LikeButton
-          onLike={handleLike}
-          onUnlike={handleUnike}
-          isLiked={isLiked}
-          count={post.likes.length}
-          onLikedList={handleLikedList}
+          item={post}
+          type={"post"}
         />
-        <CommentButton
-          onOpenCmt={handleOpenCmt}
-          count={post.comments.length}
-        />
+
+        <Link href={`/posts/${post.id}`}>
+          <CommentButton count={post.comments.length} />
+        </Link>
       </div>
     </div>
   );

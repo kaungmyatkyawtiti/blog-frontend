@@ -12,8 +12,9 @@ import { useRouter } from "next/navigation";
 type PostFormSchema = z.infer<typeof postSchema>;
 
 export default function PostCreateForm() {
+  const showLatest = useBoundStore(state => state.showLatest);
   const { showNoti } = useBoundStore();
-  const { mutateAsync: createPost } = useMutationCreatePost();
+  const { mutateAsync: createPost } = useMutationCreatePost(showLatest);
   const router = useRouter();
 
   const {

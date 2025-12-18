@@ -23,12 +23,7 @@ export default function BlogPage({
       <div
         className="group relative bg-card border border-border/60 rounded-xl p-6 hover:bg-card/90 shadow-sm hover:shadow-md hover:border-border hover-effect"
       >
-        <ContentBox
-          avatar={post.user.image}
-          username={post.user.username}
-          created={post.created}
-          content={post.content}
-        />
+        <ContentBox item={post} />
       </div>
 
       <PostComments post={post} />

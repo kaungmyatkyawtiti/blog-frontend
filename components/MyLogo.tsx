@@ -15,7 +15,8 @@ export default function MyLogo() {
         alt="Logo"
         width={35}
         height={35}
-        className="object-cover rounded-full"
+        loading="eager"
+        className="object-cover rounded-full h-auto w-auto"
       />
       {
         !isMobile &&

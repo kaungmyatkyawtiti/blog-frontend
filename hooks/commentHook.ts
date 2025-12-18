@@ -74,7 +74,7 @@ export const useMutationLikeComment = () => useMutation({
   },
 });
 
-export const useMutationUnlikeComment = () => useMutation({
+export const useMutationUnlikeComment = (authUserId: number) => useMutation({
   mutationFn: (comment: Comment) => unlikeCommentApi(comment.id),
 
   onMutate: async (comment) => {
@@ -83,8 +83,6 @@ export const useMutationUnlikeComment = () => useMutation({
     const previous = queryClient.getQueryData(['posts', comment.postId]);
 
     console.log("comment", comment);
-
-    const userLike = comment.likes.find(like => like.userId === comment.userId);
 
     queryClient.setQueryData(
       ["posts", comment.postId],
@@ -95,7 +93,7 @@ export const useMutationUnlikeComment = () => useMutation({
             cmt.id === comment.id
               ? {
                 ...cmt,
-                likes: cmt.likes.filter(l => l.userId !== userLike?.userId)
+                likes: cmt.likes.filter(l => l.userId !== authUserId)
               }
               : cmt
           )

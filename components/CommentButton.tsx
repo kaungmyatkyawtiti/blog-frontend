@@ -3,13 +3,11 @@ import { MessageSquare } from "lucide-react";
 
 interface CommentButtonProps {
   className?: string;
-  onOpenCmt: () => void;
   count: number;
 }
 
 export default function CommentButton({
   className,
-  onOpenCmt,
   count
 }: CommentButtonProps) {
   return (
@@ -18,7 +16,6 @@ export default function CommentButton({
         "flex items-center gap-3 text-foreground/70 group/comment",
         className
       )}
-      onClick={onOpenCmt}
     >
       <p
         className="group-hover/comment:scale-110 hover-effect"

@@ -3,7 +3,7 @@
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Comment } from '@/types/comment';
-import { useMutationCreateComment, useMutationDeleteComment, useMutationLikeComment, useMutationUnlikeComment } from '@/hooks/commentHook';
+import { useMutationCreateComment, useMutationDeleteComment } from '@/hooks/commentHook';
 import { useBoundStore } from '@/lib/hooks/useBoundStore';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,9 +11,8 @@ import z from 'zod';
 import { commentSchema } from '@/lib/schemas';
 import { Post } from '@/types/post';
 import DeletePostBtn from './DeletePostBtn';
-import LikeButton from './LikeButton';
 import ContentBox from './ContentBox';
-import { useRouter } from 'next/navigation';
+import LikeButton from './LikeButton';
 
 interface CommentItemProps {
   comment: Comment;
@@ -24,35 +23,9 @@ export function CommentItem({
 }: CommentItemProps) {
   const { showNoti } = useBoundStore();
 
-  const router = useRouter();
-
-  const { mutateAsync: likeComment, isSuccess: likeSuccess } = useMutationLikeComment();
-  const { mutateAsync: unlikeComment, isSuccess: unlikeSuccess } = useMutationUnlikeComment();
   const { mutateAsync: deleteComment, isSuccess: deleteSuccess } = useMutationDeleteComment();
 
   const user = useBoundStore(state => state.user);
-
-  const handleLike = async () => {
-    try {
-      const result = await likeComment(comment);
-      console.log("Like comment success from post comments", result);
-      showNoti("You liked the comment!")
-    } catch (err) {
-      console.log("Like post error from post comments", err);
-      showNoti("Like the comment failed!")
-    }
-  }
-
-  const handleUnike = async () => {
-    try {
-      await unlikeComment(comment);
-      console.log("Unlike comment success from post comments");
-      showNoti("You unliked the comment!")
-    } catch (err) {
-      console.log("Unlike comment error from post comments", err);
-      showNoti("Unlike the comment failed!")
-    }
-  }
 
   const handleDelete = async () => {
     try {
@@ -64,13 +37,6 @@ export function CommentItem({
       showNoti("Failed to delete comment!")
     }
   }
-
-  const handleLikedList = () => {
-    router.push(`/likes/comments/${comment.id}`);
-    console.log("see who likes this comment");
-  }
-
-  const isLiked = !!(user && comment.likes.some(like => like.userId === user.id));
 
   const isOwner = user && user.id === comment.user.id;
 
@@ -85,19 +51,23 @@ export function CommentItem({
           title={"Delete The Comment."}
         />
       }
+
+      {/* <ContentBox */}
+      {/*   avatar={comment.user.image} */}
+      {/*   username={comment.user.username} */}
+      {/*   created={comment.created} */}
+      {/*   content={comment.content} */}
+      {/*   avatarSize={50} */}
+      {/* /> */}
+
       <ContentBox
-        avatar={comment.user.image}
-        username={comment.user.username}
-        created={comment.created}
-        content={comment.content}
+        item={comment}
         avatarSize={50}
       />
+
       <LikeButton
-        onLike={handleLike}
-        onUnlike={handleUnike}
-        isLiked={isLiked}
-        count={comment.likes.length}
-        onLikedList={handleLikedList}
+        item={comment}
+        type={"comment"}
         className='flex justify-end'
       />
     </div>
