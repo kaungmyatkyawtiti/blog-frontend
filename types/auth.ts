@@ -10,6 +10,15 @@ export interface LoginUser {
   password: string;
 }
 
+export interface AuthUser {
+  id: number;
+  name: string;
+  username: string;
+  image: null | string;
+  bio: null | string;
+  created: string;
+}
+
 export interface AuthUserResponse {
   id: number;
   name: string;

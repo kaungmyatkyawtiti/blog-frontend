@@ -1,5 +1,6 @@
 "use client";
 
+import AuthPortionSkeletion from "./AuthPortionSkeletion";
 import AuthPotion from "./AuthPotion";
 import { ModeToggle } from "./ModeToggle";
 import MyLogo from "./MyLogo";
@@ -7,7 +8,7 @@ import { SidebarTrigger } from "./ui/sidebar";
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
 
 export default function Header() {
-  const user = useBoundStore(state => state.user);
+  const status = useBoundStore(state => state.status);
 
   return (
     <header
@@ -22,9 +23,8 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          {
-            user && <AuthPotion />
-          }
+          {status === "loading" && <AuthPortionSkeletion />}
+          {status === "authenticated" && <AuthPotion />}
           <ModeToggle />
         </div>
       </div>

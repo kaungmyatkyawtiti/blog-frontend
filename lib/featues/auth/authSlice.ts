@@ -1,12 +1,12 @@
 import { BoundStore } from "@/lib/hooks/useBoundStore";
-import { AuthUserResponse, LoginUser, RegisterUser } from "@/types/auth";
+import { AuthUser, AuthUserResponse, LoginUser, RegisterUser } from "@/types/auth";
 import { apiUrl } from "@/utils/env";
 import { StateCreator } from "zustand";
 
 export type AuthStatus = "loading" | "guest" | "authenticated";
 
 export interface AuthState {
-  user: AuthUserResponse | null
+  user: AuthUser | null
   status: AuthStatus;
 }
 
@@ -15,7 +15,7 @@ export interface AuthActions {
   login: (user: LoginUser) => Promise<AuthUserResponse>;
   refreshAccess: () => Promise<void>;
   logout: () => void;
-  setUser: (user: AuthUserResponse) => void;
+  setUser: (user: AuthUser) => void;
 }
 
 export type AuthSlice = AuthState & AuthActions
@@ -104,6 +104,7 @@ export const createAuthSlice: StateCreator<
         throw new Error(json.error || "Invalid user");
       }
 
+      console.log("data", data)
       set((state) => {
         state.user = data,
           state.status = "authenticated"
@@ -169,7 +170,7 @@ export const createAuthSlice: StateCreator<
     );
   },
 
-  setUser: (user: AuthUserResponse) => {
+  setUser: (user: AuthUser) => {
     set((state) => {
       state.user = user,
         state.status = "authenticated"
@@ -177,5 +178,6 @@ export const createAuthSlice: StateCreator<
       undefined,
       "auth/verifyUser"
     )
-  }
+  },
+
 });

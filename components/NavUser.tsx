@@ -32,7 +32,7 @@ export default function NavUser() {
   const { isMobile } = useSidebar();
   const user = useBoundStore((state) => state.user);
   const status = useBoundStore(state => state.status)
-  console.log("status", status)
+  console.log("status", status, "user", user)
   const isAuth = status === "authenticated";
   if (status === "loading") return <NavUserSkeleton />
 
@@ -47,7 +47,7 @@ export default function NavUser() {
             >
               <Avatar className="h-9 w-9 rounded-full">
                 <AvatarImage
-                  src={isAuth ? "/logo.jpg" : "/default_user.png"}
+                  src={user?.image ?? "/default_user.png"}
                   alt={isAuth ? user?.name : "Guest"}
                 />
                 {/* <AvatarFallback className="rounded-full"> */}
