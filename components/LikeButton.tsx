@@ -91,7 +91,11 @@ const LikeButton = ({ type, item, className }: LikeButtonProps) => {
     >
       <button
         onClick={isLiked ? handleUnlike : handleLike}
-        className="hover:scale-110 hover-effect"
+        disabled={!user}
+        className={cn(
+          "hover:scale-110 hover-effect",
+          !user && "hover:scale-100"
+        )}
       >
         <Heart
           size={22}

@@ -42,6 +42,14 @@ const LoginForm = () => {
       showNoti("Successfully login.");
     } catch (err) {
       console.log("Failed to login from Login form", err);
+      const errMsg = err instanceof Error ? err.message : err as string;
+      const fields: (keyof FormInputs)[] = ["username", "password"];
+      fields.forEach(field => {
+        setError(field, {
+          type: "server",
+          message: errMsg,
+        });
+      });
       showNoti("Failed to login.");
     } finally {
       reset(

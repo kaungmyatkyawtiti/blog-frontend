@@ -1,5 +1,6 @@
 'use client'
 
+import BackButton from '@/components/BackButton'
 import ContentBox from '@/components/ContentBox'
 import PostComments from '@/components/PostComments'
 import { useGetPostById } from '@/hooks/postHook'
@@ -20,6 +21,10 @@ export default function BlogPage({
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-3xl">
+      <div className='flex items-center mb-6'>
+        <BackButton />
+        <span className='font-semibold text-xl text-foreground/90'>Back</span>
+      </div>
       <div
         className="group relative bg-card border border-border/60 rounded-xl p-6 hover:bg-card/90 shadow-sm hover:shadow-md hover:border-border hover-effect"
       >

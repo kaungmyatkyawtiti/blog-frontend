@@ -45,6 +45,14 @@ const RegisterForm = () => {
       showNoti("Successfully register.");
     } catch (err) {
       console.log("Failed to register from register form", err);
+      const errMsg = err instanceof Error ? err.message : err as string;
+      const fields: (keyof FormInputs)[] = ["name", "username", "password", "confirmPassword"];
+      fields.forEach(field => {
+        setError(field, {
+          type: "server",
+          message: errMsg,
+        });
+      });
       showNoti("Failed to register.");
     } finally {
       reset(

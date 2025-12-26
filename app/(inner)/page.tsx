@@ -28,10 +28,10 @@ export default function HomePage() {
   if (isError) return <div> {error.message} </div>
 
   return (
-    <main className="max-w-3xl px-4 mx-auto my-10 space-y-6">
-      {
-        auth && (
-          <div className="inline-flex rounded-lg bg-muted p-1 border border-border shadow-inner">
+    <>
+      {auth && (
+        <div className="flex justify-center mt-10">
+          <div className="inline-flex rounded-lg bg-card p-1 border border-border shadow-inner">
             <FeedButton
               isActive={showLatest}
               onClick={() => toggleShowLatest(true)}
@@ -48,32 +48,23 @@ export default function HomePage() {
               Following
             </FeedButton>
           </div>
-        )
-      }
-
-      {/* <div className="w-2/3"> */}
-      {/*   <InputGroup> */}
-      {/*     <InputGroupInput placeholder="Search..." /> */}
-      {/*     <InputGroupAddon> */}
-      {/*       <SearchIcon /> */}
-      {/*     </InputGroupAddon> */}
-      {/*   </InputGroup> */}
-      {/* </div> */}
-
-      {
-        data.length === 0 &&
-        <div className="text-center text-foreground">
-          <p>No posts yet. Start the conversation!</p>
         </div>
-      }
-      {
-        data.map(post =>
-          <PostCard
-            key={post.id}
-            post={post}
-          />
-        )
-      }
-    </main >
+      )}
+      <main className="max-w-3xl px-4 mx-auto my-8 space-y-6">
+        {
+          data.length === 0 ? (
+            <div className="flex justify-center items-center p-10 bg-card rounded-lg text-foreground border border-border">
+              <p className="text-lg font-medium">No posts yet. Start the conversation!</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-6">
+              {data.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          )
+        }
+      </main>
+    </>
   )
 }

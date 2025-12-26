@@ -37,11 +37,6 @@ const UserContainer = ({ user }: UserContainerProps) => {
       </div>
 
       <FollowButton user={user} />
-      {/* <button */}
-      {/*   className='bg-social-indigo font-medium px-2 py-1 rounded-lg text-sm' */}
-      {/* > */}
-      {/*   follow */}
-      {/* </button> */}
     </div>
   )
 }
