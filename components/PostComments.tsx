@@ -13,6 +13,7 @@ import { Post } from '@/types/post';
 import DeletePostBtn from './DeletePostBtn';
 import ContentBox from './ContentBox';
 import LikeButton from './LikeButton';
+import { toast } from 'sonner';
 
 interface CommentItemProps {
   comment: Comment;
@@ -21,8 +22,6 @@ interface CommentItemProps {
 export function CommentItem({
   comment
 }: CommentItemProps) {
-  const { showNoti } = useBoundStore();
-
   const { mutateAsync: deleteComment, isSuccess: deleteSuccess } = useMutationDeleteComment();
 
   const user = useBoundStore(state => state.user);
@@ -31,10 +30,10 @@ export function CommentItem({
     try {
       await deleteComment(comment);
       console.log("Delete comment success from post comments");
-      showNoti("Successfully deleted the comment!")
+      toast.success("Successfully deleted comment.");
     } catch (err) {
       console.log("Delete comment error from post comments", err);
-      showNoti("Failed to delete comment!")
+      toast.error("Failed to delete comment.");
     }
   }
 
@@ -83,8 +82,6 @@ type CommentFormSchema = z.infer<typeof commentSchema>;
 const PostComments = ({ post }: PostCommentProps) => {
   const { mutateAsync: createComment, isSuccess } = useMutationCreateComment();
 
-  const { showNoti } = useBoundStore();
-
   const {
     register,
     handleSubmit,
@@ -105,10 +102,10 @@ const PostComments = ({ post }: PostCommentProps) => {
       }
       const result = await createComment(newOne);
       console.log("Create comment success from post comments", result);
-      showNoti("You commented this post!")
+      toast.success("You commented this post.");
     } catch (err) {
       console.log("Create comment error from post comments", err);
-      showNoti("Failed to comment!")
+      toast.error("Failed to comment.");
     } finally {
       reset();
     }

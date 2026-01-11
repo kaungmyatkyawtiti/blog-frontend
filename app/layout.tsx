@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import GlobalSnackbar from "@/components/GlobalSnackbar";
+import { Toaster } from 'sonner';
 
 const montserrat = Montserrat({
   weight: ['400', '500', '600', '700'],
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <GlobalSnackbar />
+          <Toaster richColors />
         </Providers>
       </body>
     </html>

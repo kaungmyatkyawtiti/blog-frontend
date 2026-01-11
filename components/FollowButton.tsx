@@ -4,6 +4,7 @@ import { useMutationFollowUser, useMutationUnfollowUser } from "@/hooks/userHook
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
 import { cn } from "@/lib/utils";
 import { User } from "@/types/user";
+import { toast } from "sonner";
 
 interface FollowButtonProps {
   user: User;
@@ -15,7 +16,6 @@ export default function FollowButton({
   className,
 }: FollowButtonProps) {
   const auth = useBoundStore(state => state.user);
-  const { showNoti } = useBoundStore();
   const { mutateAsync: followUser } = useMutationFollowUser();
   const { mutateAsync: unfollowUser } = useMutationUnfollowUser();
 
@@ -29,10 +29,10 @@ export default function FollowButton({
     try {
       const result = await followUser(user);
       console.log("Following success", result);
-      showNoti("You follow that user!");
+      toast.success("You follow that user.");
     } catch (error) {
       console.log("Following error", error);
-      showNoti("Follow that user failed!");
+      toast.error("Following failed.");
     }
   }
 
@@ -40,10 +40,10 @@ export default function FollowButton({
     try {
       const result = await unfollowUser(user);
       console.log("Unfollow success", result);
-      showNoti("You unfollow that user!");
+      toast.success("You unfollow that user.");
     } catch (error) {
       console.log("Unfollow error", error);
-      showNoti("Unfollow that user failed!");
+      toast.error("Unfollow is failed.");
     }
   }
 

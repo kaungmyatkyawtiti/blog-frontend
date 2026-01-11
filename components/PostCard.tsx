@@ -8,6 +8,7 @@ import { useMutationDeletePost } from '@/hooks/postHook';
 import CommentButton from './CommentButton';
 import LikeButton from './LikeButton';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 interface PostCardProps {
   post: Post;
@@ -17,18 +18,16 @@ const PostCard = ({
   post,
 }: PostCardProps) => {
   const showLatest = useBoundStore(state => state.showLatest);
-  const { showNoti } = useBoundStore();
-
   const { mutateAsync: deletePost, isSuccess: deleteSuccess } = useMutationDeletePost(showLatest);
 
   const handleDelete = async () => {
     try {
       await deletePost(post);
       console.log("Delete post success from post card");
-      showNoti("Successfully deleted post!")
+      toast.success("Successfully deleted post.");
     } catch (err) {
       console.log("Delete post error from post card action", err);
-      showNoti("Failed to delete post!")
+      toast.error("Failed to delete post.");
     }
   }
 

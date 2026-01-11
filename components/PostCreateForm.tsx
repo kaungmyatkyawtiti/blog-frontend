@@ -8,12 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { useBoundStore } from "@/lib/hooks/useBoundStore";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type PostFormSchema = z.infer<typeof postSchema>;
 
 export default function PostCreateForm() {
   const showLatest = useBoundStore(state => state.showLatest);
-  const { showNoti } = useBoundStore();
   const { mutateAsync: createPost } = useMutationCreatePost(showLatest);
   const router = useRouter();
 
@@ -35,10 +35,10 @@ export default function PostCreateForm() {
       const result = await createPost(data);
       console.log("Create post success from post create from", result);
       router.push("/");
-      showNoti("Successfully created post.");
+      toast.success("Successfully created post.");
     } catch (err) {
       console.log("Create post error from post create form", err);
-      showNoti("Failed to create post.");
+      toast.error("Failed to create post.");
     }
   }
 
